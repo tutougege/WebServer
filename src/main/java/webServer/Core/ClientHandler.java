@@ -1,22 +1,24 @@
-package webServer;
+package webServer.Core;
+
+import webServer.Http.HttpServletRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientHandler implements Runnable{
-    Socket socket;
+    static Socket socket;
     public ClientHandler(Socket socket){
         this.socket = socket;
     }
-    public void run(){
+    public void run() {
         try {
-            InputStream is = socket.getInputStream();
-            int d;
-            while ((d = is.read())!=-1){
-                System.out.print((char)d);
-            }
+            //解析请求
+            HttpServletRequest http = new HttpServletRequest(socket);
         } catch (IOException e) {
             e.printStackTrace();
         }
