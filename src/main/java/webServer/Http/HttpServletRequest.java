@@ -22,6 +22,27 @@ public class HttpServletRequest {
     String protocol;//协议版本
     //消息头相关信息
     Map<String,String> map = new HashMap<>();
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setMap(String name,String text) {
+        map.put(name,text);
+    }
+
     //消息正文相关信息
     //
     //
@@ -34,15 +55,15 @@ public class HttpServletRequest {
         getRequestLine();
         //解析消息行
         getMap();
-        System.out.println("map:"+map);
+//        System.out.println("map:"+map);
         //解析消息正文
         parseContent();
     }
     public void getRequestLine() throws IOException {
-        String line = null;
+        String line = "";
         line = readLine();
         String[] data = line.split("\\s");
-//        System.out.println(Arrays.toString(data));
+        System.out.println(Arrays.toString(data));
         method = data[0];
         uri = data[1];
         protocol = data[2];
@@ -64,7 +85,7 @@ public class HttpServletRequest {
         }
     }
     public void parseContent(){
-
+//
     }
 
     public String readLine() throws IOException {
@@ -83,6 +104,7 @@ public class HttpServletRequest {
         }
         String line = stringBuilder.toString().trim();
 //        System.out.println(line);
+//        is.close();
         return line;
     }
 

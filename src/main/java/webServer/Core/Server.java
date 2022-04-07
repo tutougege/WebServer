@@ -17,11 +17,13 @@ public class Server {
     }
     public void start(){
         try {
-            System.out.println("等待客户端连接...");
-            Socket socket1 = server.accept();
-            System.out.println("连接成功");
-            Thread t1 = new Thread(new ClientHandler(socket1));
-            t1.start();
+            while(true){
+                System.out.println("等待客户端连接...");
+                Socket socket1 = server.accept();
+                System.out.println("连接成功");
+                Thread t1 = new Thread(new ClientHandler(socket1));
+                t1.start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

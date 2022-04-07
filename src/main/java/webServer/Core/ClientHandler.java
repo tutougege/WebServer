@@ -1,6 +1,7 @@
 package webServer.Core;
 
 import webServer.Http.HttpServletRequest;
+import webServer.Http.HttpServletResponse;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,26 +20,23 @@ public class ClientHandler implements Runnable{
             //解析请求
             HttpServletRequest http = new HttpServletRequest(socket);
             //处理请求
-
+            HttpServletResponse httpServletResponse = new HttpServletResponse(socket);
             //发送响应
-            File file = new File("./webApps/MyWeb.index.html");
-            //发送状态行
-            String line = "HTTP/1.1 200 OK";
-            printLine(line);
-            //发送响应头
-            line = "Content-Type: Text/html";
-            printLine(line);
-            line = "Content-Length"+file.length();
-            printLine(line);
+//            System.out.println(http.getUri());
+            File file = new File("./webApps/MyWeb"+http.getUri());
+            if(file.exists()&&file.isFile()){
+                //如果请求的是文件 并且路径正确 则发送响应
+                httpServletResponse.setFile(file);
+                httpServletResponse.setResponse();
+            }else {
+                httpServletResponse.setStatusCode(404);
+                httpServletResponse.setStatusReason("NotFound");
+                httpServletResponse.setFile(new File("./webApps/root/404.html"));
+                httpServletResponse.setResponse();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void printLine(String line) throws IOException {
-            OutputStream os = socket.getOutputStream();
-            byte[] bytes = line.getBytes(StandardCharsets.ISO_8859_1);
-            os.write(bytes);
-            os.write((char)13);//发送回车符
-            os.write((char)10);//发送换行符
-    }
+
 }
