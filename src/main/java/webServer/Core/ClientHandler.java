@@ -19,6 +19,9 @@ public class ClientHandler implements Runnable{
         try {
             //解析请求
             HttpServletRequest http = new HttpServletRequest(socket);
+            //处理请求
+
+            //发送响应
         } catch (IOException e) {
             e.printStackTrace();
         }
