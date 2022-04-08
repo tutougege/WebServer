@@ -2,6 +2,7 @@ package webServer.Http;
 
 import com.sun.corba.se.impl.ior.iiop.IIOPProfileTemplateImpl;
 
+import javax.xml.transform.Source;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -38,15 +39,22 @@ public class HttpServletResponse {
     }
     private void SendStatusCode() throws IOException {
         String line;
-        line = "HTTP/1.1"+statusCode+statusReason;
+        line = "HTTP/1.1 "+statusCode+" "+statusReason;
+        System.out.println("响应状态行:"+line);
         printLine(line);
     }
     private void SendHeaders() throws IOException {
-        String line;
-        line = "Content-Type: text/html";
-        printLine(line);
-        line = "Content-Length"+file.length();
-        printLine(line);
+//        String line;
+//        line = "Content-Type: text/html";
+//        System.out.println("响应头:"+line);
+//        printLine(line);
+//        line = "Content-Length: "+file.length();
+//        System.out.println("响应头:"+line);
+//        printLine(line);
+        for(Map.Entry<String,String> entry : headers.entrySet()){
+                String line = entry.getKey()+": "+entry.getValue();
+                printLine(line);
+        }
         printLine("");//单独发送回车换行，表示响应头响应完毕
     }
 
@@ -94,6 +102,12 @@ public class HttpServletResponse {
 
     public void setFile(File file) {
         this.file = file;
+        String fileName = file.getName();
+        //根据用户请求的资源文件截取后缀名
+        String ext = fileName.substring(fileName.lastIndexOf(".")+1);
+        addHeaders("Content-Type", HttpContent.getMimeType(ext));
+        addHeaders("Content-Length",file.length()+"");
+//        System.out.println(ext);
     }
 
     public Socket getSocket() {
