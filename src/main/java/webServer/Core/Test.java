@@ -7,5 +7,6 @@ public class Test {
         File f = new File("./webApps/MyWeb/reg.html");
         System.out.println(f.exists());
         System.out.println(f.isFile());
+        System.out.println("");
     }
 }
