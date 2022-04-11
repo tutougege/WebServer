@@ -1,16 +1,11 @@
 package webServer.Core;
 
-import jdk.internal.dynalink.beans.StaticClass;
-import org.junit.Test;
-import webServer.Http.HttpContent;
 import webServer.Http.HttpServletRequest;
 import webServer.Http.HttpServletResponse;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.net.URISyntaxException;
 
 public class ClientHandler implements Runnable{
     static Socket socket;
@@ -25,7 +20,9 @@ public class ClientHandler implements Runnable{
             HttpServletResponse httpServletResponse = new HttpServletResponse(socket);
             //发送响应
 //            System.out.println(http.getUri());
-            File file = new File("./"+http.getUri());
+            File root  = new File(ClientHandler.class.getClassLoader().getResource(".").toURI());
+            File staticDir = new File(root, "static/");
+            File file = new File(staticDir,http.getUri());
 //            System.out.println(file.getName());
             if(file.exists()&&file.isFile()){
                 //如果请求的是文件 并且路径正确 则发送响应
@@ -33,10 +30,10 @@ public class ClientHandler implements Runnable{
             }else {
                 httpServletResponse.setStatusCode(404);
                 httpServletResponse.setStatusReason("NotFound");
-                httpServletResponse.setFile(new File("./webApps/root/404.html"));
+                httpServletResponse.setFile(new File(root, "static/root/404.html"));
             }
             httpServletResponse.setResponse();
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
